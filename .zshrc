@@ -8,6 +8,14 @@ autoload -Uz compinit && compinit
 export GOPATH="$HOME/go"
 export PATH="$PATH:$HOME/.local/go/bin:$GOPATH/bin"
 
+# Volta
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+# Neovim
+export NVIM_APPNAME="nvim"
+
+
 # starship
 eval "$(starship init zsh)"
 
@@ -16,9 +24,6 @@ eval "$(sheldon source)"
 
 # uv
 eval "$(uv generate-shell-completion zsh)"
-
-# Neovim
-export NVIM_APPNAME="nvim"
 
 # Aliases
 if [ -f "$HOME/.aliases" ]; then

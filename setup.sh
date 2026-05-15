@@ -28,7 +28,7 @@ else
     exit 1
 fi
 
-# --- 0. curl, unzip, jq ---
+# --- curl, unzip, jq ---
 if ! exists curl; then
     echo "Installing curl..."
     $INSTALL_CMD curl
@@ -44,7 +44,7 @@ if ! exists unzip; then
     $INSTALL_CMD unzip
 fi
 
-# --- 0. Build tools ---
+# --- Build tools ---
 if ! exists cc; then
     echo "Linker 'cc' not found. Installing build tools..."
     if exists brew; then
@@ -68,7 +68,7 @@ if ! exists gdb; then
     $INSTALL_CMD gdb
 fi
 
-# --- 1. fzf ---
+# --- fzf ---
 if ! exists fzf; then
     echo "Installing fzf..."
     $INSTALL_CMD fzf
@@ -76,20 +76,20 @@ else
     echo "fzf is already installed."
 fi
 
-# --- 2. Rust toolchain ---
+# --- Rust toolchain ---
 if ! exists cargo; then
     echo "Installing rustup..."
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
     source "$HOME/.cargo/env"
 fi
 
-# --- 3. uv ---
+# --- uv ---
 if ! exists uv; then
     echo "Installing uv..."
     curl -LsSf https://astral.sh/uv/install.sh | sh -s -- --no-modify-path
 fi
 
-# --- 4. Zig ---
+# --- Zig ---
 if ! exists zig; then
     echo "Installing Zig..."
     if exists brew || exists pacman; then
@@ -125,6 +125,7 @@ if ! exists zig; then
     fi
 fi
 
+# --- Go ---
 if ! exists go; then
     echo "Installing Go..."
     if exists brew || exists pacman; then
@@ -174,7 +175,16 @@ if ! exists go; then
     fi
 fi
 
-# --- 5. Neovim ---
+# --- Node ---
+if ! exists volta; then
+    echo "Installing Node(volta)..."
+    curl https://get.volta.sh | bash --no-modify-path
+    export VOLTA_HOME="$HOME/.volta"
+    export PATH="$VOLTA_HOME/bin:$PATH"
+    volta install node
+fi
+
+# --- Neovim ---
 if ! exists nvim; then
     echo "Installing Neovim..."
     if [ "$(uname)" == "Darwin" ]; then
@@ -195,13 +205,13 @@ if ! exists nvim; then
     fi
 fi
 
-# --- 6. Zsh ---
+# --- Zsh ---
 if ! exists zsh; then
     echo "Installing zsh..."
     $INSTALL_CMD zsh
 fi
 
-# --- 7. Sheldon ---
+# --- Sheldon ---
 if ! exists sheldon; then
     echo "Installing sheldon..."
     if exists brew || exists pacman; then
@@ -211,7 +221,17 @@ if ! exists sheldon; then
     fi
 fi
 
-# --- 8. Rust made tools ---
+# Ghostty
+if ! exists ghostty; then
+    echo "Installing Ghostty..."
+    if exists brew; then
+        brew install --cask ghostty
+    elif exists pacman; then
+        sudo pacman -S --noconfirm ghostty
+    fi
+fi
+
+# --- Rust made tools ---
 if ! exists lsd; then
     # lsd
     echo "Installing lsd..."
@@ -264,7 +284,7 @@ if ! exists delta; then
     fi
 fi
 
-# --- 9. Nerd Fonts ---
+# --- Nerd Fonts ---
 FONT_NAME="JetBrainsMono"
 echo "Checking Nerd Fonts ($FONT_NAME)..."
 
@@ -302,7 +322,7 @@ else
     fi
 fi
 
-# --- 10. Local Settings ---
+# --- Local Settings ---
 echo "==> Configuring Environment..."
 if [ ! -f "$HOME/.zshrc.local" ]; then
     echo "Creating .zshrc.local (for secret envs)..."
@@ -311,7 +331,7 @@ if [ ! -f "$HOME/.zshrc.local" ]; then
     echo "# It is excluded from Git." >> "$HOME/.zshrc.local"
 fi
 
-# --- 11. Link Configs ---
+# --- Link Configs ---
 echo "==> Linking Configs..."
 mkdir -p "$HOME/.config"
 
@@ -331,7 +351,7 @@ if [ -d "$DOTFILES_DIR/.config" ]; then
 fi
 echo "Links created."
 
-# --- 12. Git Configuration ---
+# --- Git Configuration ---
 echo "==> Git Configuration..."
 if [ -z "$(git config --global user.name)" ]; then
     read -p "Enter Git user.name: " git_name
@@ -356,7 +376,7 @@ if exists delta; then
     git config --global help.autoCorrect prompt
 fi
 
-# --- 13. Default shell change ---
+# --- Default shell change ---
 if [ "$SHELL" != "$(which zsh)" ]; then
     echo "Changing default shell to zsh..."
     chsh -s "$(which zsh)"

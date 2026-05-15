@@ -1,0 +1,12 @@
+# Font
+font-family = JetBrainsMono Nerd Font
+font-size = 10
+
+# Window
+background-opacity = 0.9
+
+# Scrollback
+scrollback-limit = 100000
+
+# Shell (tmuxなし、直接zsh)
+command = /usr/bin/zsh -l
