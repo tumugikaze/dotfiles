@@ -1,0 +1,7 @@
+# Fallback: used when pacman/brew doesn't have the package
+# format: <crate_name>[:<binary_name>]
+lsd
+ripgrep:rg
+bat
+zoxide
+git-delta:delta

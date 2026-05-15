@@ -1,0 +1,3 @@
+# --- Password Manager ---
+1password
+1password-cli

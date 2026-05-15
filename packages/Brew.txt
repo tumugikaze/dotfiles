@@ -1,0 +1,33 @@
+# --- Base ---
+curl
+jq
+unzip
+git
+gdb
+
+# --- Shell ---
+zsh
+sheldon
+fzf
+zoxide
+starship
+
+# --- CLI Tools ---
+lsd
+ripgrep
+bat
+git-delta
+
+# --- Editor ---
+neovim
+
+# --- Languages ---
+zig
+go
+
+# --- Browser ---
+firefox
+
+# --- Fonts (cask) ---
+# brew install --cask font-jetbrains-mono-nerd-font
+# brew install --cask 1password

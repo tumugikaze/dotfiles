@@ -76,7 +76,7 @@ else
     echo "fzf is already installed."
 fi
 
-# --- Rust toolchain ---
+# --- Rust ---
 if ! exists cargo; then
     echo "Installing rustup..."
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
@@ -175,7 +175,7 @@ if ! exists go; then
     fi
 fi
 
-# --- Node ---
+# --- Node(volta) ---
 if ! exists volta; then
     echo "Installing Node(volta)..."
     curl https://get.volta.sh | bash
@@ -221,67 +221,10 @@ if ! exists sheldon; then
     fi
 fi
 
-# Ghostty
-if ! exists ghostty; then
-    echo "Installing Ghostty..."
-    if exists brew; then
-        brew install --cask ghostty
-    elif exists pacman; then
-        sudo pacman -S --noconfirm ghostty
-    fi
-fi
-
-# --- Rust made tools ---
-if ! exists lsd; then
-    # lsd
-    echo "Installing lsd..."
-    if exists brew || exists pacman || exists dnf; then
-        $INSTALL_CMD lsd
-    else
-        cargo install lsd
-    fi
-fi
+# --- Starship ---
 if ! exists starship; then
     echo "Installing starship..."
     curl -sS https://starship.rs/install.sh | sh -s -- -y
-fi
-if ! exists rg; then
-    echo "Installing ripgrep..."
-    if exists brew || exists pacman || exists dnf || exists apt; then
-        $INSTALL_CMD ripgrep
-    else 
-        cargo install ripgrep
-    fi
-fi
-if ! exists bat; then
-    echo "Installing bat..."
-    if exists brew || exists pacman || exists dnf; then
-        $INSTALL_CMD bat
-    elif exists apt; then
-        $INSTALL_CMD bat
-        mkdir -p "$HOME/.local/bin"
-        if exists batcat; then
-            ln -sf "$(which batcat)" "$HOME/.local/bin/bat"
-        fi
-    else 
-        cargo install --locked bat
-    fi
-fi
-if ! exists zoxide; then
-    echo "Installing zoxide..."
-    if exists brew || exists pacman; then
-        $INSTALL_CMD zoxide
-    else
-        cargo install zoxide
-    fi
-fi
-if ! exists delta; then
-    echo "Installing delta..."
-    if exists brew || exists pacman; then
-        $INSTALL_CMD git-delta
-    else
-        cargo install git-delta
-    fi
 fi
 
 # --- Nerd Fonts ---
@@ -371,8 +314,8 @@ if exists delta; then
     git config --global delta.side-by-side true
     git config --global merge.conflictstyle diff3
     git config --global diff.colorMoved default
-    git config --global core.editor "vim"
-    git config --global sequence.editor "vim"
+    git config --global core.editor "nvim"
+    git config --global sequence.editor "nvim"
     git config --global help.autoCorrect prompt
 fi
 
