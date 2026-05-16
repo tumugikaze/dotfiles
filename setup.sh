@@ -228,7 +228,7 @@ if ! exists starship; then
 fi
 
 # --- Nerd Fonts ---
-FONT_NAME="JetBrainsMono"
+FONT_NAME="HackGenNerdFont"
 echo "Checking Nerd Fonts ($FONT_NAME)..."
 
 if [ "$(uname)" == "Darwin" ]; then
@@ -238,8 +238,6 @@ if [ "$(uname)" == "Darwin" ]; then
     else
         echo "Nerd Font is already installed."
     fi
-elif exists pacman; then
-    $INSTALL_CMD ttf-jetbrains-mono-nerd
 else
     FONT_DIR="$HOME/.local/share/fonts"
     if [ ! -d "$FONT_DIR" ]; then
@@ -248,9 +246,8 @@ else
 
     if ! ls "$FONT_DIR" | grep -q "$FONT_NAME"; then
         echo "Installing Nerd Font manually..."
-        VERSION="v3.4.0"
         ZIP_FILE="${FONT_NAME}.zip"
-        URL="https://github.com/ryanoasis/nerd-fonts/releases/download/${VERSION}/${ZIP_FILE}"
+        URL="https://github.com/yuru7/HackGen/releases/download/v2.10.0/HackGen_v2.10.0.zip"
         
         curl -L -o "/tmp/$ZIP_FILE" "$URL"
         unzip -o -q "/tmp/$ZIP_FILE" -d "$FONT_DIR"
