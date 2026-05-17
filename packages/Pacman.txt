@@ -1,4 +1,3 @@
-# --- Base ---
 base-devel
 curl
 jq
@@ -6,44 +5,27 @@ unzip
 git
 gdb
 
-# --- Shell ---
 zsh
 sheldon
 fzf
-zoxide
 starship
 
-# --- Terminal ---
 ghostty
 
-# --- Editor ---
-# neovim: installed via tarball in setup.sh (always latest)
-
-# --- CLI Tools ---
-lsd
-ripgrep
-bat
-git-delta
-
-# --- Fonts ---
 ttf-jetbrains-mono-nerd
 
-# --- Languages ---
 zig
 go
 
-# --- Browser ---
 firefox
 firefox-i18n-ja
 
-# --- Japanese Input ---
 fcitx5
 fcitx5-mozc
 fcitx5-gtk
 fcitx5-qt
 fcitx5-configtool
 
-# --- Wayland / Hyprland ---
 xdg-desktop-portal-hyprland
 xdg-desktop-portal-gtk
 pipewire

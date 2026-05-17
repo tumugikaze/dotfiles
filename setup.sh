@@ -322,4 +322,6 @@ if [ "$SHELL" != "$(which zsh)" ]; then
     chsh -s "$(which zsh)"
 fi
 
+chmod 444 "$DOTFILES_DIR/.config/fcitx5/profile"
+
 echo "✅ All Setup Completed!"

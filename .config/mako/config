@@ -1,0 +1,9 @@
+background-color=#ffffffdd
+text-color=#cdd6f4
+border-color=#313244
+border-radius=10
+border-size=2
+padding=10
+margin=10
+font=HackGen
+default-timeout=5000
