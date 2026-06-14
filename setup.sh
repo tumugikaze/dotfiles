@@ -227,6 +227,10 @@ if ! exists starship; then
     curl -sS https://starship.rs/install.sh | sh -s -- -y
 fi
 
+# --- Others ---
+echo "Setup Packages"
+./packages/install.sh
+
 # --- Nerd Fonts ---
 FONT_NAME="HackGenNerdFont"
 echo "Checking Nerd Fonts ($FONT_NAME)..."
