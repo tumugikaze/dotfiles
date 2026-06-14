@@ -58,4 +58,4 @@ error_symbol = "[❯❯❯](bold red)"
 disabled = false
 format = '[$time]($style)'
 time_format = "%T"
-style = "bold black"
+style = "bold blue"
