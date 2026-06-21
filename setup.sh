@@ -13,6 +13,20 @@ if ! command -v nix >/dev/null 2>&1; then
     source "$HOME/.nix-profile/etc/profile.d/nix.sh"
 fi
 
+# --- Nix config (experimental features) ---
+NIX_CONF="$HOME/.config/nix/nix.conf"
+mkdir -p "$(dirname "$NIX_CONF")"
+
+add_nix_config() {
+    local key="$1" value="$2"
+    if ! grep -q "^${key}" "$NIX_CONF" 2>/dev/null; then
+        echo "${key} = ${value}" >> "$NIX_CONF"
+        echo "Added to nix.conf: ${key} = ${value}"
+    fi
+}
+
+add_nix_config "experimental-features" "nix-command flakes"
+
 # --- Home Manager ---
 if ! command -v home-manager >/dev/null 2>&1; then
     echo "Installing Home Manager..."
@@ -54,4 +68,3 @@ if [ "$SHELL" != "$(which zsh)" ]; then
 fi
 
 echo "✅ All Setup Completed!"
-
