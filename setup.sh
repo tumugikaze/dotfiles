@@ -87,9 +87,12 @@ fi
 # --- Default shell ---
 ZSH_PATH="$(command -v zsh 2>/dev/null || echo "")"
 if [ -n "$ZSH_PATH" ] && [ "$SHELL" != "$ZSH_PATH" ]; then
+    if ! grep -qx "$ZSH_PATH" /etc/shells; then
+        echo "Adding $ZSH_PATH to /etc/shells..."
+        echo "$ZSH_PATH" | sudo tee -a /etc/shells
+    fi
     echo "Changing default shell to zsh..."
     chsh -s "$ZSH_PATH"
 fi
 
 echo "✅ All Setup Completed!"
-
