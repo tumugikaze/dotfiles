@@ -45,23 +45,6 @@
         fi
       fi
     '';
-
-    installHackGenFont = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      export PATH="/usr/local/bin:/usr/bin:/bin:$HOME/.nix-profile/bin:$PATH"
-      FONT_DIR="$HOME/.local/share/fonts"
-      FONT_NAME="HackGenNerdFont"
-      if [ ! -d "$FONT_DIR" ] || ! ls "$FONT_DIR" 2>/dev/null | grep -q "$FONT_NAME"; then
-        $DRY_RUN_CMD echo "Installing HackGen Nerd Font..."
-        $DRY_RUN_CMD mkdir -p "$FONT_DIR"
-        $DRY_RUN_CMD curl -L -o "/tmp/HackGen.zip" \
-          "https://github.com/yuru7/HackGen/releases/download/v2.10.0/HackGen_v2.10.0.zip"
-        $DRY_RUN_CMD unzip -o -q "/tmp/HackGen.zip" -d "$FONT_DIR"
-        $DRY_RUN_CMD rm "/tmp/HackGen.zip"
-        if command -v fc-cache >/dev/null 2>&1; then
-          $DRY_RUN_CMD fc-cache -fv
-        fi
-      fi
-    '';
   };
 }
 
