@@ -28,7 +28,7 @@
     xdg-desktop-portal-hyprland
     xdg-desktop-portal-gtk
 
-    # IME
+    # IME (fcitx5)
     fcitx5
     fcitx5-mozc
     fcitx5-gtk
@@ -37,6 +37,7 @@
 
     # Browser
     firefox
+    chromium
 
     # Terminal
     ghostty
@@ -51,6 +52,10 @@
     "hypr".source = ../.config/hypr;
     "mako".source = ../.config/mako;
     "ghostty".source = ../.config/ghostty;
+    "fcitx5" = {
+      source = ../.config/fcitx5;
+      recursive = true;
+    };
   };
 }
 

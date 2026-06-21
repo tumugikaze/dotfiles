@@ -42,10 +42,6 @@
   };
 
   xdg.configFile = {
-    "fcitx5" = {
-      source = ../.config/fcitx5;
-      recursive = true;
-    };
     "starship.toml".source = ../.config/starship.toml;
     "sheldon".source = ../.config/sheldon;
     "nvim".source = ../.config/nvim;
