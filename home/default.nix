@@ -1,4 +1,4 @@
-{ pkgs, username, ... }:
+{ pkgs, username, config, ... }:
 
 {
   imports = [ ./activation.nix ];
@@ -22,13 +22,11 @@
       bat
       zoxide
       delta
+      sheldon
 
       # Languages
       go
       zig
-
-      # Fonts
-      hackgen-nerd-font
     ];
 
     file = {
@@ -48,7 +46,7 @@
       source = ../.config/fcitx5;
       recursive = true;
     };
-    "starship.toml".source = ../.config/starship/starship.toml;
+    "starship.toml".source = ../.config/starship.toml;
     "sheldon".source = ../.config/sheldon;
     "nvim".source = ../.config/nvim;
   };
@@ -56,7 +54,7 @@
   programs.zsh = {
     enable = true;
     dotDir = ".config/zsh";
-    initExtra = ''
+    initContent = ''
       source ~/.aliases
       [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
@@ -74,7 +72,6 @@
     enableZshIntegration = true;
   };
 
-  # delta をトップレベルで管理
   programs.delta = {
     enable = true;
     enableGitIntegration = true;
