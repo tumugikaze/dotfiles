@@ -4,6 +4,8 @@
   imports = [ ./activation.nix ];
 
   home = {
+    username = builtins.getEnv "USER";
+    homeDirectory = builtins.getEnv "HOME";
     stateVersion = "24.11";
 
     # Cargo.txtで管理していたツール群 + その他base
