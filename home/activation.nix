@@ -2,6 +2,7 @@
 
 {
   home.activation = {
+
     installRustup = ''
       if ! command -v cargo >/dev/null 2>&1; then
         $DRY_RUN_CMD echo "Installing rustup..."
@@ -30,13 +31,12 @@
 
     installNodePackages = {
       after = [ "installVolta" ];
-      data = ''
+      text = ''
         if command -v volta >/dev/null 2>&1; then
           export VOLTA_HOME="$HOME/.volta"
           export PATH="$VOLTA_HOME/bin:$PATH"
           $DRY_RUN_CMD echo "Installing Node packages..."
-          # Node.txtから読み込み
-          DOTFILES_DIR="$(dirname ${builtins.toString ../.})"
+          DOTFILES_DIR="${builtins.toString ../.}"
           if [ -f "$DOTFILES_DIR/packages/Node.txt" ]; then
             grep -E -v '^\s*(#|$)' "$DOTFILES_DIR/packages/Node.txt" \
               | xargs -r volta install
