@@ -4,9 +4,6 @@ set -e
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CURRENT_USER="$(whoami)"
 
-# 引数でプロファイルsuffixを指定
-# 例: ./setup.sh hyprland → archuser-hyprland
-#     ./setup.sh          → archuser
 SUFFIX="${1:+-$1}"
 PROFILE="${CURRENT_USER}${SUFFIX}"
 
@@ -35,13 +32,15 @@ add_nix_config() {
 add_nix_config "experimental-features" "nix-command flakes"
 
 # --- Home Manager ---
+# 初回のみnix runでインストール、以降はhome-managerコマンドを直接使う
 if ! command -v home-manager >/dev/null 2>&1; then
     echo "Installing Home Manager..."
-    nix run home-manager/master -- init
+    nix profile install --accept-flake-config \
+        "github:nix-community/home-manager/$(jq -r '.nodes["home-manager"].locked.rev' "$DOTFILES_DIR/flake.lock")"
 fi
 
 echo "==> Running Home Manager switch with profile: $PROFILE"
-nix run home-manager/master -- switch --flake "$DOTFILES_DIR#$PROFILE"
+home-manager switch --flake "$DOTFILES_DIR#$PROFILE"
 
 # --- HackGen Nerd Font ---
 FONT_DIR="$HOME/.local/share/fonts"
@@ -81,4 +80,3 @@ if [ "$SHELL" != "$(which zsh)" ]; then
 fi
 
 echo "✅ All Setup Completed!"
-
