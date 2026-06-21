@@ -9,8 +9,10 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, lib, ... }:
+  outputs = { nixpkgs, home-manager, ... }:
     let
+      lib = nixpkgs.lib;
+
       mkHome = { system, username, hyprland ? false }:
         home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.${system};
@@ -28,7 +30,7 @@
       # ユーザーリストからbase/hyprlandの両エントリを生成
       mkConfigs = us: builtins.listToAttrs (
         builtins.concatMap (u: [
-          { name = u.username;              value = mkHome { inherit (u) system username; }; }
+          { name = u.username;               value = mkHome { inherit (u) system username; }; }
           { name = "${u.username}-hyprland"; value = mkHome { inherit (u) system username; hyprland = true; }; }
         ]) us
       );
