@@ -2,8 +2,15 @@
 set -e
 
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CURRENT_USER="$(whoami)"
 
-echo "==> Start Setup..."
+# 引数でプロファイルsuffixを指定
+# 例: ./setup.sh hyprland → tgz-hyprland
+#     ./setup.sh          → tgz
+SUFFIX="${1:+-$1}"
+PROFILE="${CURRENT_USER}${SUFFIX}"
+
+echo "==> Start Setup... (user: $CURRENT_USER, profile: $PROFILE)"
 
 # --- Nix ---
 if ! command -v nix >/dev/null 2>&1; then
@@ -32,19 +39,6 @@ if ! command -v home-manager >/dev/null 2>&1; then
     echo "Installing Home Manager..."
     nix run home-manager/master -- init
 fi
-
-# --- Profile selection ---
-echo "==> Select profile:"
-echo "  1) base        (Ubuntu / Debian / LXC / Desktop)"
-echo "  2) hyprland    (Laptop: base + Hyprland)"
-echo "  3) base-arm    (aarch64 VM等)"
-read -rp "Choice [1]: " choice
-
-case "$choice" in
-    2) PROFILE="linux-hyprland" ;;
-    3) PROFILE="linux-arm" ;;
-    *) PROFILE="linux" ;;
-esac
 
 echo "==> Running Home Manager switch with profile: $PROFILE"
 nix run home-manager/master -- switch --flake "$DOTFILES_DIR#$PROFILE"

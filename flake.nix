@@ -1,5 +1,5 @@
 {
-  description = "dotfiles";
+  description = "tumugikaze dotfiles";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -9,30 +9,32 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, ... }:
+  outputs = { nixpkgs, home-manager, lib, ... }:
     let
-      mkHome = { system, extraModules ? [] }:
+      mkHome = { system, username, hyprland ? false }:
         home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.${system};
-          modules = [ ./home/default.nix ] ++ extraModules;
+          extraSpecialArgs = { inherit username; };
+          modules = [ ./home/default.nix ]
+            ++ lib.optional hyprland ./home/arch.nix;
         };
+
+      users = [
+        { username = "tgz";      system = "x86_64-linux"; }
+        { username = "archuser"; system = "x86_64-linux"; }
+        { username = "ubuntu";   system = "x86_64-linux"; }
+      ];
+
+      # ユーザーリストからbase/hyprlandの両エントリを生成
+      mkConfigs = us: builtins.listToAttrs (
+        builtins.concatMap (u: [
+          { name = u.username;              value = mkHome { inherit (u) system username; }; }
+          { name = "${u.username}-hyprland"; value = mkHome { inherit (u) system username; hyprland = true; }; }
+        ]) us
+      );
     in
     {
-      # base (Ubuntu / Debian / LXC / Desktop)
-      homeConfigurations."linux" = mkHome {
-        system = "x86_64-linux";
-      };
-
-      # base + Hyprland (Laptop専用)
-      homeConfigurations."linux-hyprland" = mkHome {
-        system = "x86_64-linux";
-        extraModules = [ ./home/arch.nix ];
-      };
-
-      # aarch64 (VM等)
-      homeConfigurations."linux-arm" = mkHome {
-        system = "aarch64-linux";
-      };
+      homeConfigurations = mkConfigs users;
     };
 }
 
