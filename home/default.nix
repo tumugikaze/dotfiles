@@ -53,7 +53,7 @@
 
   programs.zsh = {
     enable = true;
-    dotDir = ".config/zsh";
+    dotDir = "${config.xdg.configHome}/zsh";
     initContent = ''
       source ~/.aliases
       [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

@@ -15,6 +15,8 @@ if ! command -v nix >/dev/null 2>&1; then
     curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
     # shellcheck source=/dev/null
     source "$HOME/.nix-profile/etc/profile.d/nix.sh"
+else
+    source "$HOME/.nix-profile/etc/profile.d/nix.sh" 2>/dev/null || true
 fi
 
 # --- Nix config (experimental features) ---
@@ -31,12 +33,21 @@ add_nix_config() {
 
 add_nix_config "experimental-features" "nix-command flakes"
 
+# --- flake.lock生成 ---
+if [ ! -f "$DOTFILES_DIR/flake.lock" ]; then
+    echo "Generating flake.lock..."
+    nix flake update "$DOTFILES_DIR"
+fi
+
 # --- Home Manager ---
-# 初回のみnix runでインストール、以降はhome-managerコマンドを直接使う
 if ! command -v home-manager >/dev/null 2>&1; then
     echo "Installing Home Manager..."
-    nix profile install --accept-flake-config \
-        "github:nix-community/home-manager/$(jq -r '.nodes["home-manager"].locked.rev' "$DOTFILES_DIR/flake.lock")"
+    HM_REV=$(grep -A2 '"home-manager"' "$DOTFILES_DIR/flake.lock" \
+        | grep '"rev"' \
+        | sed 's/.*"\(.*\)".*/\1/')
+    echo "Using home-manager rev: $HM_REV"
+    nix profile install \
+        "github:nix-community/home-manager/${HM_REV}#packages.$(nix eval --impure --expr 'builtins.currentSystem' --raw).home-manager"
 fi
 
 echo "==> Running Home Manager switch with profile: $PROFILE"
@@ -74,9 +85,11 @@ if [ -z "$(git config --global user.email)" ]; then
 fi
 
 # --- Default shell ---
-if [ "$SHELL" != "$(which zsh)" ]; then
+ZSH_PATH="$(command -v zsh 2>/dev/null || echo "")"
+if [ -n "$ZSH_PATH" ] && [ "$SHELL" != "$ZSH_PATH" ]; then
     echo "Changing default shell to zsh..."
-    chsh -s "$(which zsh)"
+    chsh -s "$ZSH_PATH"
 fi
 
 echo "✅ All Setup Completed!"
+
