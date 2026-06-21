@@ -5,8 +5,8 @@ DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CURRENT_USER="$(whoami)"
 
 # 引数でプロファイルsuffixを指定
-# 例: ./setup.sh hyprland → tgz-hyprland
-#     ./setup.sh          → tgz
+# 例: ./setup.sh hyprland → archuser-hyprland
+#     ./setup.sh          → archuser
 SUFFIX="${1:+-$1}"
 PROFILE="${CURRENT_USER}${SUFFIX}"
 
@@ -43,6 +43,25 @@ fi
 echo "==> Running Home Manager switch with profile: $PROFILE"
 nix run home-manager/master -- switch --flake "$DOTFILES_DIR#$PROFILE"
 
+# --- HackGen Nerd Font ---
+FONT_DIR="$HOME/.local/share/fonts"
+FONT_NAME="HackGenNerdFont"
+echo "Checking Nerd Fonts ($FONT_NAME)..."
+if [ ! -d "$FONT_DIR" ] || ! ls "$FONT_DIR" 2>/dev/null | grep -q "$FONT_NAME"; then
+    echo "Installing HackGen Nerd Font..."
+    mkdir -p "$FONT_DIR"
+    curl -L -o "/tmp/HackGen.zip" \
+        "https://github.com/yuru7/HackGen/releases/download/v2.10.0/HackGen_v2.10.0.zip"
+    unzip -o -q "/tmp/HackGen.zip" -d "$FONT_DIR"
+    rm "/tmp/HackGen.zip"
+    if command -v fc-cache >/dev/null 2>&1; then
+        echo "Updating font cache..."
+        fc-cache -fv
+    fi
+else
+    echo "HackGen Nerd Font is already installed."
+fi
+
 # --- Git Configuration ---
 echo "==> Git Configuration..."
 if [ -z "$(git config --global user.name)" ]; then
@@ -62,3 +81,4 @@ if [ "$SHELL" != "$(which zsh)" ]; then
 fi
 
 echo "✅ All Setup Completed!"
+
