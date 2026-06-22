@@ -45,3 +45,4 @@ bindkey '^[[3;5~' kill-word # Ctrl + Delete
 
 # Local configurations
 [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+if [ -e /home/tgz/.nix-profile/etc/profile.d/nix.sh ]; then . /home/tgz/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
