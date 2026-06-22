@@ -10,15 +10,3 @@ This repository contains my personal dotfiles.
  $ ./dotfiles/setup.sh
 ```
 
-## Install List
-
-- Rust
-  - C build tools
-- uv (Python)
-- neovim
-- zsh
-  - fzf
-  - starship
-  - lsd (LSDeluxe)
-    - Nerd font(JetBrainsMono)
-  - sheldon

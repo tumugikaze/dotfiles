@@ -51,16 +51,27 @@
     enable = true;
     dotDir = "${config.xdg.configHome}/zsh";
     initContent = ''
+      source ~/.nix-profile/etc/profile.d/nix.sh
       source ~/.aliases
       [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
-      eval "$(zoxide init zsh)"
+      # Keybindings
+      bindkey '^[[1;5C' forward-word # Ctrl + ->
+      bindkey '^[[1;5D' backward-word # Ctrl + <-
+      bindkey '^[[3~' delete-char # Delete key
+      bindkey '^H' backward-delete-word # Ctrl + Backspace
+      bindkey '^[[3;5~' kill-word # Ctrl + Delete
 
       export VOLTA_HOME="$HOME/.volta"
       export PATH="$VOLTA_HOME/bin:$PATH"
       export PATH="$HOME/.cargo/bin:$PATH"
       export PATH="$HOME/.local/bin:$PATH"
     '';
+  };
+
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
   };
 
   programs.starship = {
