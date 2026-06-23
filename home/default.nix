@@ -15,6 +15,7 @@
       unzip
       curl
       gdb
+      nmap
 
       # Modern CLI (旧Cargo.txt)
       lsd
