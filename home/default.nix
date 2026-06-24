@@ -9,23 +9,24 @@
     stateVersion = "24.11";
 
     packages = with pkgs; [
-      # Shell utils
       fzf
       jq
+      zip
       unzip
       curl
       gdb
-      nmap
-
-      # Modern CLI (旧Cargo.txt)
       lsd
       ripgrep
       bat
       zoxide
       delta
       sheldon
+      wget
+      tree
+      htop
+      git
+      wireshark
 
-      # Languages
       go
       zig
     ];
@@ -56,17 +57,18 @@
       source ~/.aliases
       [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
-      # Keybindings
-      bindkey '^[[1;5C' forward-word # Ctrl + ->
-      bindkey '^[[1;5D' backward-word # Ctrl + <-
-      bindkey '^[[3~' delete-char # Delete key
-      bindkey '^H' backward-delete-word # Ctrl + Backspace
-      bindkey '^[[3;5~' kill-word # Ctrl + Delete
+      bindkey "^[[1;5C" forward-word    # Ctrl+Right
+      bindkey "^[[1;5D" backward-word   # Ctrl+Left
+      bindkey "^H" backward-kill-word   # Ctrl+Backspace
+
+      eval "$(sheldon source)"
 
       export VOLTA_HOME="$HOME/.volta"
       export PATH="$VOLTA_HOME/bin:$PATH"
       export PATH="$HOME/.cargo/bin:$PATH"
       export PATH="$HOME/.local/bin:$PATH"
+      export PATH="$HOME/.ghcup/bin:$HOME/.cabal/bin:$PATH"
+      [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
     '';
   };
 

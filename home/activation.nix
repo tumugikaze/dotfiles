@@ -32,6 +32,23 @@
       fi
     '';
 
+    installGhcup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      export PATH="/usr/local/bin:/usr/bin:/bin:$HOME/.nix-profile/bin:$HOME/.ghcup/bin:$PATH"
+      if ! command -v ghcup >/dev/null 2>&1; then
+        $DRY_RUN_CMD echo "Installing GHCup..."
+        $DRY_RUN_CMD curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org \
+          | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_INSTALL_NO_STACK=1 sh
+      fi
+    '';
+
+    installSdkman = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      export PATH="/usr/local/bin:/usr/bin:/bin:$HOME/.nix-profile/bin:$PATH"
+      if [ ! -d "$HOME/.sdkman" ]; then
+        $DRY_RUN_CMD echo "Installing SDKMAN..."
+        $DRY_RUN_CMD curl -s "https://get.sdkman.io" | bash
+      fi
+    '';
+
     installNodePackages = lib.hm.dag.entryAfter [ "installVolta" ] ''
       export PATH="/usr/local/bin:/usr/bin:/bin:$HOME/.nix-profile/bin:$HOME/.volta/bin:$PATH"
       export VOLTA_HOME="$HOME/.volta"

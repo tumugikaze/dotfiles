@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+source ~/.nix-profile/etc/profile.d/nix.sh 2>/dev/null || true
+
 echo "==> Update Start..."
 
 # --- Nix管理のツール ---
@@ -18,7 +20,10 @@ uv self update
 echo "Updating volta / node..."
 volta install node@lts
 
-# --- Cargo製ツール (Nix管理に移行済みだが念のため) ---
-# cargo install-update -a  # cargo-updateが入っている場合
+echo "Updating GHCup..."
+ghcup upgrade 2>/dev/null || true
+
+echo "Updating SDKMAN..."
+source "$HOME/.sdkman/bin/sdkman-init.sh" 2>/dev/null && sdk selfupdate 2>/dev/null || true
 
 echo "✅ Update Completed!"
