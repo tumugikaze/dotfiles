@@ -26,6 +26,7 @@
       htop
       git
       wireshark
+      spotify
 
       go
       zig

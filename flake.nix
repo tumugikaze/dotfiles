@@ -1,5 +1,5 @@
 {
-  description = "tumugikaze dotfiles";
+  description = "dotfiles";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -15,7 +15,10 @@
 
       mkHome = { system, username, hyprland ? false }:
         home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.${system};
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
           extraSpecialArgs = { inherit username; };
           modules = [ ./home/default.nix ]
             ++ lib.optional hyprland ./home/arch.nix;
@@ -27,7 +30,6 @@
         { username = "ubuntu";   system = "x86_64-linux"; }
       ];
 
-      # ユーザーリストからbase/hyprlandの両エントリを生成
       mkConfigs = us: builtins.listToAttrs (
         builtins.concatMap (u: [
           { name = u.username;               value = mkHome { inherit (u) system username; }; }
