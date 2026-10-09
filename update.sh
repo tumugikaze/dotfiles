@@ -1,29 +1,21 @@
 #!/bin/bash
-set -e
+set -eo pipefail
 
-source ~/.nix-profile/etc/profile.d/nix.sh 2>/dev/null || true
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo "==> Update Start..."
+source "$DOTFILES_DIR/lib.sh"
 
-# --- Nix管理のツール ---
-echo "Updating Nix flake..."
-nix flake update
-home-manager switch --flake .#"$(whoami)"
+if [ "$#" -ne 0 ]; then
+    echo "Usage: $0" >&2
+    exit 1
+fi
 
-# --- 自己管理型ツールチェーン ---
-echo "Updating rustup..."
-rustup update
+load_nix
 
-echo "Updating uv..."
-uv self update
+if ! command -v nix >/dev/null 2>&1; then
+    echo "Nix is not available. Run setup.sh <environment> first." >&2
+    exit 1
+fi
 
-echo "Updating volta / node..."
-volta install node@lts
-
-echo "Updating GHCup..."
-ghcup upgrade 2>/dev/null || true
-
-echo "Updating SDKMAN..."
-source "$HOME/.sdkman/bin/sdkman-init.sh" 2>/dev/null && sdk selfupdate 2>/dev/null || true
-
-echo "✅ Update Completed!"
+cd "$DOTFILES_DIR"
+nix --extra-experimental-features "nix-command flakes" flake update

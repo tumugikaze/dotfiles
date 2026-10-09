@@ -1,7 +1,7 @@
 vim.keymap.set("n", "<leader>w", function()
     require("conform").format({
         async = false,
-        lsp_fallback = true
+        lsp_format = "fallback"
     })
     vim.cmd("write")
 end)

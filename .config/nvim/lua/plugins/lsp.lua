@@ -2,31 +2,22 @@ return {
     {
         "neovim/nvim-lspconfig",
         dependencies = {
-            "williamboman/mason.nvim",
-            "williamboman/mason-lspconfig.nvim",
-            "folke/lazydev.nvim",
+            "hrsh7th/cmp-nvim-lsp",
+            { "folke/lazydev.nvim", ft = "lua", opts = {} },
         },
         config = function()
-            require("lazydev").setup()
-            require("mason").setup()
-            require("mason-lspconfig").setup({
-                ensure_installed = {
-                    "lua_ls",
-                    "rust_analyzer",
-                    "ts_ls",
-                    "pyright",
-                    "gopls"
-                },
-
-                handlers = {
-                    function(server_name)
-                        local capa = require("cmp_nvim_lsp").default_capabilities()
-                        require("lspconfig")[server_name].setup({
-                            capabilities = capa,
-                        })
-                    end,
-                }
+            -- Language servers are installed by Home Manager (rust-analyzer by rustup)
+            vim.lsp.config("*", {
+                capabilities = require("cmp_nvim_lsp").default_capabilities(),
             })
+            vim.lsp.enable({
+                "lua_ls",
+                "rust_analyzer",
+                "ts_ls",
+                "pyright",
+                "gopls",
+            })
+
             vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
             vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Show hover" })
             vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename variable" })

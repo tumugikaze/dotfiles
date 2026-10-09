@@ -1,6 +1,6 @@
 # Font
 font-family = JetBrainsMono Nerd Font
-font-size = 10
+font-size = 14
 
 # Window
 background-opacity = 0.9
@@ -9,4 +9,4 @@ background-opacity = 0.9
 scrollback-limit = 100000
 
 # Shell (tmuxなし、直接zsh)
-command = /usr/bin/zsh -l
+command = zsh -l

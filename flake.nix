@@ -11,34 +11,38 @@
 
   outputs = { nixpkgs, home-manager, ... }:
     let
-      lib = nixpkgs.lib;
+      username = "tgz";
 
-      mkHome = { system, username, hyprland ? false }:
+      mkHome = { system, module }:
         home-manager.lib.homeManagerConfiguration {
           pkgs = import nixpkgs {
             inherit system;
             config.allowUnfree = true;
           };
           extraSpecialArgs = { inherit username; };
-          modules = [ ./home/default.nix ]
-            ++ lib.optional hyprland ./home/arch.nix;
+          modules = [ module ];
         };
 
-      users = [
-        { username = "tgz";      system = "x86_64-linux"; }
-        { username = "archuser"; system = "x86_64-linux"; }
-        { username = "ubuntu";   system = "x86_64-linux"; }
-      ];
-
-      mkConfigs = us: builtins.listToAttrs (
-        builtins.concatMap (u: [
-          { name = u.username;               value = mkHome { inherit (u) system username; }; }
-          { name = "${u.username}-hyprland"; value = mkHome { inherit (u) system username; hyprland = true; }; }
-        ]) us
-      );
     in
     {
-      homeConfigurations = mkConfigs users;
+      homeConfigurations = {
+        darwin = mkHome {
+          system = "aarch64-darwin";
+          module = ./home/darwin.nix;
+        };
+        linux = mkHome {
+          system = "x86_64-linux";
+          module = ./home/linux.nix;
+        };
+        hyprland = mkHome {
+          system = "x86_64-linux";
+          module = ./home/hyprland.nix;
+        };
+        wsl = mkHome {
+          system = "x86_64-linux";
+          module = ./home/wsl.nix;
+        };
+      };
     };
 }
 

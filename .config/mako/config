@@ -1,9 +1,9 @@
-background-color=#ffffffdd
+background-color=#1e1e2edd
 text-color=#cdd6f4
 border-color=#313244
 border-radius=10
 border-size=2
 padding=10
 margin=10
-font=HackGen
+font=JetBrainsMono Nerd Font 11
 default-timeout=5000

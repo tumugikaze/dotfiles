@@ -1,2 +1,1 @@
-# Global npm packages (installed via Volta)
 @anthropic-ai/claude-code

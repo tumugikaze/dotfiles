@@ -1,84 +1,92 @@
-{ pkgs, username, config, ... }:
+{ pkgs, lib, username, config, ... }:
 
 {
-  imports = [ ./activation.nix ];
-
   home = {
     inherit username;
-    homeDirectory = "/home/${username}";
     stateVersion = "24.11";
+    backupFileExtension = "bak";
 
     packages = with pkgs; [
-      fzf
       jq
       zip
       unzip
       curl
-      gdb
       lsd
       ripgrep
       bat
-      zoxide
-      delta
-      sheldon
       wget
       tree
       htop
-      git
-      wireshark
-      spotify
-      podman
       terraform
 
       go
       zig
+      rustup
+      uv
+      zsh-completions
+
+      # Language servers (rust-analyzer comes from rustup)
+      lua-language-server
+      typescript-language-server
+      pyright
+      gopls
     ];
 
-    file = {
-      ".aliases".source = ../.aliases;
-      ".zshrc.local" = {
-        text = ''
-          # This file is for local configuration (tokens, secrets).
-          # It is excluded from Git.
-        '';
-        force = false;
-      };
-    };
   };
 
   xdg.configFile = {
     "starship.toml".source = ../.config/starship.toml;
-    "sheldon".source = ../.config/sheldon;
     "nvim".source = ../.config/nvim;
+    "ghostty".source = ../.config/ghostty;
   };
 
   programs.zsh = {
     enable = true;
     dotDir = "${config.xdg.configHome}/zsh";
-    initContent = ''
-      source ~/.nix-profile/etc/profile.d/nix.sh
-      source ~/.aliases
-      [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+    enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+    shellAliases = {
+      ls = "lsd";
+      la = "lsd -a";
+      ll = "lsd -lha";
+      grep = "rg";
+      cat = "bat";
+    };
+    initContent = lib.mkMerge [
+      (lib.mkOrder 600 ''
+        source ${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh
+      '')
+      ''
+        if [[ -r /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+          source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+        elif [[ -r "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
+          source "$HOME/.nix-profile/etc/profile.d/nix.sh"
+        fi
+        [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
-      bindkey "^[[1;5C" forward-word    # Ctrl+Right
-      bindkey "^[[1;5D" backward-word   # Ctrl+Left
-      bindkey "^H" backward-kill-word   # Ctrl+Backspace
-      bindkey '^[[3~' delete-char       # Delete key
-      bindkey '^[[3;5~' kill-word       # Ctrl + Delete
+        bindkey "^[[1;5C" forward-word    # Ctrl+Right
+        bindkey "^[[1;5D" backward-word   # Ctrl+Left
+        bindkey "^H" backward-kill-word   # Ctrl+Backspace
+        bindkey '^[[3~' delete-char       # Delete key
+        bindkey '^[[3;5~' kill-word       # Ctrl + Delete
+      ''
+    ];
+  };
 
-      eval "$(sheldon source)"
+  programs.mise = {
+    enable = true;
+    enableZshIntegration = true;
+  };
 
-      export VOLTA_HOME="$HOME/.volta"
-      export PATH="$VOLTA_HOME/bin:$PATH"
-      export PATH="$HOME/.cargo/bin:$PATH"
-      export PATH="$HOME/.local/bin:$PATH"
-      export PATH="$HOME/.ghcup/bin:$HOME/.cabal/bin:$PATH"
-      [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-    '';
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
   };
 
   programs.zoxide = {
     enable = true;
+    options = [ "--cmd cd" ];
     enableZshIntegration = true;
   };
 
@@ -98,6 +106,9 @@
 
   programs.git = {
     enable = true;
+    # Signing key and signByDefault are per machine (~/.gitconfig).
+    # The default signer is Nix's ssh-keygen, which supports FIDO2 (YubiKey) keys.
+    signing.format = "ssh";
     settings = {
       merge.conflictstyle = "diff3";
       diff.colorMoved = "default";
@@ -107,15 +118,23 @@
     };
   };
 
+  programs.java = {
+    enable = true;
+    package = pkgs.jdk25;
+  };
+
   programs.neovim = {
     enable = true;
     defaultEditor = true;
+    vimAlias = true;
     withRuby = false;
     withPython3 = false;
   };
 
-  home.sessionVariables = {
-    EDITOR = "nvim";
-  };
+  home.sessionPath = [
+    "${config.home.homeDirectory}/.local/bin"
+    "${config.home.homeDirectory}/.cargo/bin"
+  ];
+
 }
 
