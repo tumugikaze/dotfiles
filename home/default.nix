@@ -17,7 +17,10 @@
       wget
       tree
       htop
+      openssl_4_1
       terraform
+      python314
+      ffmpeg
 
       go
       zig
